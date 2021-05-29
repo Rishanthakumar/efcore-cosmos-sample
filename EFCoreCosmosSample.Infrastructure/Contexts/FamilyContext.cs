@@ -12,12 +12,16 @@ namespace EFCoreCosmosSample.Infrastructure.Contexts
 
         public FamilyContext(DbContextOptions<FamilyContext> options): base(options)
         {
+           this.Database.EnsureCreated();
         }
 
         public DbSet<Family> Families { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Family>()
+                .ToContainer("Families");
+
             modelBuilder.Entity<Family>()
                 .HasPartitionKey(nameof(Family.LastName))
                 .OwnsMany(f => f.Parents);
