@@ -16,10 +16,17 @@ namespace EFCoreCosmosSample.Api.Controllers
         public FamilyController(IFamliyService famliyService) => _familyService = famliyService;
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> List()
         {
             var families = await this._familyService.ListAllFamilies();
             return Ok(families);
+        }
+
+        [HttpGet, Route("{familyId}")]
+        public async Task<IActionResult> Get([FromRoute] string familyId)
+        {
+            var family = await this._familyService.GetFamily(familyId);
+            return Ok(family);
         }
 
         [HttpPost]
@@ -28,6 +35,22 @@ namespace EFCoreCosmosSample.Api.Controllers
             var savedFamily = await this._familyService.AddFamily(family);
 
             return Ok(savedFamily);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] Family family)
+        {
+            await this._familyService.UpdateFamily(family);
+
+            return Ok();
+        }
+
+        [HttpDelete, Route("{familyId}")]
+        public async Task<IActionResult> Delete([FromRoute] string familyId)
+        {
+            await this._familyService.DeleteFamily(familyId);
+
+            return Ok();
         }
     }
 }

@@ -5,7 +5,7 @@ using EFCoreCosmosSample.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,10 +17,11 @@ namespace EFCoreCosmosSample.Infrastructure.Repositories
 
         public FamilyRepository(FamilyContext familyContext) => _context = familyContext;
 
-        public async Task<Family> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<Family> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var keyValues = new object[] { id };
-            return await this._context.Set<Family>().FindAsync(keyValues, cancellationToken);
+            var family =  await this._context.Set<Family>().FindAsync(keyValues, cancellationToken);
+            return family;
         }
         public async Task<Family> AddAsync(Family entity, CancellationToken cancellationToken = default)
         {
@@ -32,19 +33,28 @@ namespace EFCoreCosmosSample.Infrastructure.Repositories
 
         public async Task DeleteAsync(Family entity, CancellationToken cancellationToken = default)
         {
-            this._context.Set<Family>().Remove(entity);
+            this._context.Remove(entity);
             await this._context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(Family entity, CancellationToken cancellationToken = default)
         {
-            this._context.Entry(entity).State = EntityState.Modified;
+            this._context.Update(entity);
             await this._context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<IReadOnlyList<Family>> ListAllAsync(CancellationToken cancellationToken = default)
         {
-            return await this._context.Families.ToListAsync();
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+
+            var families = await this._context.Families.ToListAsync();
+
+            stopwatch.Stop();
+
+            TimeSpan ts = stopwatch.Elapsed;
+
+            return families;
         }
     }
 }

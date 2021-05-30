@@ -20,10 +20,10 @@ namespace EFCoreCosmosSample.Infrastructure.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Family>()
-                .ToContainer("Families");
+                .ToContainer("Families");              
 
             modelBuilder.Entity<Family>()
-                .HasPartitionKey(nameof(Family.LastName))
+                .HasPartitionKey(nameof(Family.Id))
                 .OwnsMany(f => f.Parents);
 
             modelBuilder.Entity<Family>()
