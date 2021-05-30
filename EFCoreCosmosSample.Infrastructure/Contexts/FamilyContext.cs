@@ -1,6 +1,7 @@
 ﻿
 using EFCoreCosmosSample.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace EFCoreCosmosSample.Infrastructure.Contexts
 {
@@ -20,7 +21,12 @@ namespace EFCoreCosmosSample.Infrastructure.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Family>()
-                .ToContainer("Families");              
+                .ToContainer("Families");
+
+            modelBuilder.Entity<Family>()
+                .Property(f => f.Id)
+                .HasConversion<string>()
+                .HasValueGenerator<SequentialGuidValueGenerator>();
 
             modelBuilder.Entity<Family>()
                 .HasPartitionKey(nameof(Family.Id))

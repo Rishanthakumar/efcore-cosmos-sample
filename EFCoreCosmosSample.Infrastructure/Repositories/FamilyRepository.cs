@@ -25,7 +25,6 @@ namespace EFCoreCosmosSample.Infrastructure.Repositories
         }
         public async Task<Family> AddAsync(Family entity, CancellationToken cancellationToken = default)
         {
-            entity.Id = Guid.NewGuid().ToString();
             await this._context.AddAsync(entity);
             await this._context.SaveChangesAsync(cancellationToken);
             return entity;
